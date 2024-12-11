@@ -378,9 +378,7 @@ app.put('/editarSueldoEmpleado/:id', async (req, res) => {
         message: `El sueldo del empleado con ID ${idEmpleado} ha sido actualizado a ${nuevoSueldo}.`,
       });
     } else {
-      return res
-        .status(500)
-        .json({ error: 'No se pudo actualizar el sueldo.' });
+      return res.status(500).json({ error: '' });
     }
   } catch (error) {
     console.error('Error al editar el sueldo del empleado:', error);
