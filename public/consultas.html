@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ejecutar Consultas SQL</title>
+    <style>
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(90deg, #111, #444);
+        padding: 1rem 2rem;
+        color: white;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      }
+
+      .navbar a {
+        color: #00e7ff;
+        text-decoration: none;
+        margin: 0 1rem;
+        font-size: 1.1rem;
+        transition: color 0.3s, transform 0.2s;
+      }
+
+      .navbar a:hover {
+        color: #ff00a1;
+        transform: scale(1.1);
+      }
+
+      .navbar .paginaweb {
+        font-weight: bold;
+        font-size: 1.5rem;
+        color: #00e7ff;
+      }
+
+      body {
+        font-family: 'Arial', sans-serif;
+        background: linear-gradient(to bottom, #0d0d0d, #1a1a1a);
+        margin: 0;
+        color: #eee;
+        padding: 20px;
+      }
+
+      h1,
+      h2 {
+        text-align: center;
+        color: #00e7ff;
+      }
+
+      button {
+        padding: 15px 30px;
+        margin: 10px;
+        background: linear-gradient(45deg, #ff00a1, #00e7ff);
+        color: white;
+        border: none;
+        border-radius: 30px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        transition: transform 0.2s, box-shadow 0.3s;
+      }
+
+      button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+      }
+
+      pre {
+        background: #111;
+        color: #00e7ff;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        margin: 20px auto;
+        max-width: 80%;
+        font-family: 'Courier New', Courier, monospace;
+        overflow-x: auto;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <div class="paginaweb">HOTELUDP</div>
+      <div class="menu">
+        <a href="/">Inicio</a>
+        <a href="/consultas.html">Consultas</a>
+        <a href="/modificaciones.html">Modificaiones</a>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Ejecutar Consultas SQL</h1>
+      <button onclick="getHuespedes()">Ver Huéspedes</button>
+      <button onclick="getHabitacionesDisponibles()">
+        Ver Habitaciones Disponibles
+      </button>
+      <button onclick="getReservasConfirmadas()">
+        Ver Reservas Confirmadas
+      </button>
+      <button onclick="irAHistorial()">
+        Historial de un cliente en específico
+      </button>
+      <button onclick="consultarIngresos()">Ver Ingresos Totales</button>
+      <button onclick="getDetalleMantenimiento()">
+        Ver Detalle Mantenimientos
+      </button>
+      <button onclick="getProveedorProducto()">
+        Ver Proveedores y sus Productos
+      </button>
+      <button onclick="getServicios()">
+        Ver Servicios Ofrecidos por el Hotel
+      </button>
+      <button onclick="getSalariosEmpleados()">
+        Ver Salarios de los Empleados
+      </button>
+      <button onclick="getHabitacionMantenimiento()">
+        Ver Habitaciones en Mantenimiento
+      </button>
+      <button onclick="irAFechaEspecifica()">
+        Consultar Reservas por Fechas
+      </button>
+
+      <h2>Resultados</h2>
+      <pre id="resultados"></pre>
+    </div>
+
+    <script>
+      async function ejecutarConsulta(url) {
+        try {
+          const respuesta = await fetch(url);
+          const data = await respuesta.json();
+          document.getElementById('resultados').textContent = JSON.stringify(
+            data,
+            null,
+            2
+          );
+        } catch (error) {
+          document.getElementById('resultados').textContent =
+            'Error al ejecutar la consulta.';
+        }
+      }
+
+      function getHuespedes() {
+        ejecutarConsulta('http://localhost:3001/consultaListarHuespedes');
+      }
+
+      function getHabitacionesDisponibles() {
+        ejecutarConsulta(
+          'http://localhost:3001/consultaHabitacionesDisponibles'
+        );
+      }
+
+      function getReservasConfirmadas() {
+        ejecutarConsulta('http://localhost:3001/consultaReservasConfirmadas');
+      }
+
+      function irAHistorial() {
+        window.location.href = '/historial.html';
+      }
+
+      async function consultarIngresos() {
+        try {
+          const respuesta = await fetch(
+            'http://localhost:3001/consultaIngresosTotales'
+          );
+          const data = await respuesta.json();
+          document.getElementById(
+            'resultados'
+          ).textContent = `Ingreso Total: $${data.ingreso_total || 0}`;
+        } catch (error) {
+          document.getElementById('resultados').textContent =
+            'Error al consultar los ingresos.';
+        }
+      }
+
+      function getDetalleMantenimiento() {
+        ejecutarConsulta('http://localhost:3001/consultaDetalleMantenimiento');
+      }
+
+      function getProveedorProducto() {
+        ejecutarConsulta('http://localhost:3001/consultaProveedorProducto');
+      }
+
+      function getServicios() {
+        ejecutarConsulta('http://localhost:3001/consultaServicios');
+      }
+
+      function getSalariosEmpleados() {
+        ejecutarConsulta('http://localhost:3001/consultaSalariosEmpleados');
+      }
+
+      function getHabitacionMantenimiento() {
+        ejecutarConsulta(
+          'http://localhost:3001/consultaHabitacionMantenimiento'
+        );
+      }
+
+      function irAFechaEspecifica() {
+        window.location.href = '/fecha_especifica.html';
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Consultar Reservas por Fechas</title>
+    <style>
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(90deg, #111, #444);
+        padding: 1rem 2rem;
+        color: white;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      }
+
+      .navbar a {
+        color: #00e7ff;
+        text-decoration: none;
+        margin: 0 1rem;
+        font-size: 1.1rem;
+        transition: color 0.3s, transform 0.2s;
+      }
+
+      .navbar a:hover {
+        color: #ff00a1;
+        transform: scale(1.1);
+      }
+
+      .navbar .paginaweb {
+        font-weight: bold;
+        font-size: 1.5rem;
+        color: #00e7ff;
+      }
+
+      body {
+        font-family: 'Arial', sans-serif;
+        background: linear-gradient(to bottom, #0d0d0d, #1a1a1a);
+        margin: 0;
+        color: #eee;
+        padding: 20px;
+      }
+
+      h1,
+      h2 {
+        text-align: center;
+        color: #00e7ff;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: rgba(20, 20, 20, 0.9);
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      label {
+        font-size: 1rem;
+        color: #eee;
+      }
+
+      input[type='date'] {
+        padding: 0.8rem;
+        font-size: 1rem;
+        border: none;
+        border-radius: 8px;
+        background: #222;
+        color: white;
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
+      }
+
+      button {
+        padding: 0.8rem 2rem;
+        font-size: 1.1rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: #fff;
+        background: linear-gradient(45deg, #ff00a1, #00e7ff);
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.3s;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+      }
+
+      pre {
+        background: #111;
+        color: #00e7ff;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        margin: 20px auto;
+        max-width: 100%;
+        font-family: 'Courier New', Courier, monospace;
+        overflow-x: auto;
+      }
+
+      .error {
+        color: #ff5252;
+        font-size: 1rem;
+        margin-top: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <div class="paginaweb">HOTELUDP</div>
+      <div class="menu">
+        <a href="/">Inicio</a>
+        <a href="/consultas.html">Consultas</a>
+        <a href="/modificaciones.html">Modificaiones</a>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Consultar Reservas por Fechas</h1>
+      <form id="formularioFechas">
+        <label for="fechaInicio">Fecha de inicio:</label>
+        <input type="date" id="fechaInicio" name="fechaInicio" required />
+        <label for="fechaFin">Fecha de fin:</label>
+        <input type="date" id="fechaFin" name="fechaFin" required />
+        <button type="submit">Consultar</button>
+      </form>
+
+      <h2>Resultados:</h2>
+      <pre id="resultados"></pre>
+      <div id="error" class="error"></div>
+    </div>
+
+    <script>
+      document
+        .getElementById('formularioFechas')
+        .addEventListener('submit', async (event) => {
+          event.preventDefault();
+          const fechaInicio = document.getElementById('fechaInicio').value;
+          const fechaFin = document.getElementById('fechaFin').value;
+
+          try {
+            const respuesta = await fetch(
+              `http://localhost:3001/consultaReservasPorFechas?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`
+            );
+            const data = await respuesta.json();
+
+            if (data.length === 0) {
+              document.getElementById('resultados').textContent =
+                'No se encontraron reservas para el rango de fechas proporcionado.';
+            } else {
+              document.getElementById('resultados').textContent =
+                JSON.stringify(data, null, 2);
+            }
+            document.getElementById('error').textContent = '';
+          } catch (error) {
+            document.getElementById('resultados').textContent =
+              'Error al consultar las reservas.';
+            document.getElementById('error').textContent =
+              'Hubo un problema con la conexión al servidor.';
+          }
+        });
+    </script>
+  </body>
+</html>

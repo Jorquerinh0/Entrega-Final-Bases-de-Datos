@@ -1,0 +1,72 @@
+--listar todos los huespedes
+SELECT * FROM Huesped;
+
+Lista
+
+--listar habitaciones disponibles
+SELECT * FROM Habitacion
+WHERE estado = 'DISPONIBLE';
+
+Lista
+
+--reservas confirmadas
+SELECT r.id_reserva, h.nombre, r.fecha_ingreso, r.fecha_salida, r.estado
+FROM Reservas r
+JOIN Huesped h ON r.id_huesped = h.id_huesped
+WHERE r.estado = 'CONFIRMADA';
+
+Lista
+
+--historial de facturas de un huesped en especifico
+SELECT f.fecha, f.monto_total, f.estado_pago
+FROM Facturas f
+JOIN Huesped h ON f.id_huesped = h.id_huesped
+WHERE h.id_huesped = 1; --cambiar la id para el huesped que se requiera
+
+Lista
+
+--ingresos totales por facturas pagadas
+SELECT SUM(monto_total) AS ingreso_total
+FROM Facturas
+WHERE estado_pago = TRUE;
+
+Lista
+
+--detalle de mantenimiento de habitaciones
+SELECT m.fecha_mantenimiento, m.descripcion, h.tipo
+FROM Mantenimiento m
+JOIN Habitacion h ON m.id_habitacion = h.id_habitacion;
+
+Listo
+
+--Lista de proveedores y productos
+SELECT * FROM Proveedores;
+
+Listo
+
+--listar los servicios ofrecidos por el hotel
+SELECT * FROM Servicios;
+
+Listo
+
+--listar los empleados y sus salarios
+SELECT nombre, cargo, salario
+FROM Empleados;
+
+Listo
+
+--listar las habitaciones en mantenimiento
+SELECT * FROM Habitacion
+WHERE estado = 'MANTENIMIENTO';
+
+Listo
+
+
+
+
+
+--reservas segun un rango de fechas especifico
+SELECT r.id_reserva, h.nombre, r.fecha_ingreso, r.fecha_salida
+FROM Reservas r
+JOIN Huesped h ON r.id_huesped = h.id_huesped
+WHERE r.fecha_ingreso BETWEEN '2024-10-01' AND '2024-12-01'; --cambie las fechas para definir el rango

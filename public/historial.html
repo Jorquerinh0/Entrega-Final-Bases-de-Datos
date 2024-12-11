@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Historial de Facturas</title>
+    <style>
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(90deg, #111, #444);
+        padding: 1rem 2rem;
+        color: white;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      }
+
+      .navbar a {
+        color: #00e7ff;
+        text-decoration: none;
+        margin: 0 1rem;
+        font-size: 1.1rem;
+        transition: color 0.3s, transform 0.2s;
+      }
+
+      .navbar a:hover {
+        color: #ff00a1;
+        transform: scale(1.1);
+      }
+
+      .navbar .paginaweb {
+        font-weight: bold;
+        font-size: 1.5rem;
+        color: #00e7ff;
+      }
+
+      body {
+        font-family: 'Arial', sans-serif;
+        background: linear-gradient(to bottom, #0d0d0d, #1a1a1a);
+        margin: 0;
+        color: #eee;
+        padding: 20px;
+      }
+
+      h1,
+      h2 {
+        text-align: center;
+        color: #00e7ff;
+      }
+
+      label {
+        font-size: 1.1rem;
+        color: #00e7ff;
+        display: block;
+        margin-bottom: 10px;
+      }
+
+      input[type='number'] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 1rem;
+        background: #222;
+        color: #00e7ff;
+      }
+
+      button {
+        padding: 15px 30px;
+        margin: 10px auto;
+        display: block;
+        background: linear-gradient(45deg, #ff00a1, #00e7ff);
+        color: white;
+        border: none;
+        border-radius: 30px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        transition: transform 0.2s, box-shadow 0.3s;
+      }
+
+      button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+      }
+
+      pre {
+        background: #111;
+        color: #00e7ff;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        margin: 20px auto;
+        max-width: 80%;
+        font-family: 'Courier New', Courier, monospace;
+        overflow-x: auto;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: auto;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <div class="paginaweb">HOTELUDP</div>
+      <div class="menu">
+        <a href="/">Inicio</a>
+        <a href="/consultas.html">Consultas</a>
+        <a href="/modificaciones.html">Modificaiones</a>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Historial de Facturas</h1>
+      <label for="clienteId">Ingrese el ID del Cliente:</label>
+      <input type="number" id="clienteId" placeholder="ID del Cliente" />
+      <button onclick="consultarHistorial()">Consultar</button>
+
+      <h2>Resultados</h2>
+      <pre id="resultados">Esperando datos...</pre>
+    </div>
+
+    <script>
+      async function consultarHistorial() {
+        const clienteId = document.getElementById('clienteId').value;
+
+        if (!clienteId) {
+          alert('Por favor, ingrese un ID válido.');
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `http://localhost:3001/consultaHistorialFacturas?id=${clienteId}`
+          );
+          const data = await response.json();
+
+          if (data.length === 0) {
+            document.getElementById('resultados').textContent =
+              'No se encontraron facturas para este cliente.';
+          } else {
+            document.getElementById('resultados').textContent = JSON.stringify(
+              data,
+              null,
+              2
+            );
+          }
+        } catch (error) {
+          console.error(error);
+          document.getElementById('resultados').textContent =
+            'Error al ejecutar la consulta.';
+        }
+      }
+    </script>
+  </body>
+</html>

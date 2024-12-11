@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Editar Datos de Huesped</title>
+    <style>
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(90deg, #111, #444);
+        padding: 1rem 2rem;
+        color: white;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      }
+
+      .navbar a {
+        color: #00e7ff;
+        text-decoration: none;
+        margin: 0 1rem;
+        font-size: 1.1rem;
+        transition: color 0.3s, transform 0.2s;
+      }
+
+      .navbar a:hover {
+        color: #ff00a1;
+        transform: scale(1.1);
+      }
+
+      .navbar .paginaweb {
+        font-weight: bold;
+        font-size: 1.5rem;
+        color: #00e7ff;
+      }
+
+      body {
+        font-family: 'Arial', sans-serif;
+        background: linear-gradient(to bottom, #0d0d0d, #1a1a1a);
+        margin: 0;
+        color: #eee;
+        padding: 20px;
+      }
+
+      h1,
+      h2 {
+        text-align: center;
+        color: #00e7ff;
+      }
+
+      label {
+        font-size: 1.1rem;
+        color: #00e7ff;
+        display: block;
+        margin-bottom: 10px;
+      }
+
+      .container {
+        max-width: 500px;
+        margin: 50px auto;
+        padding: 20px;
+        background: rgba(20, 20, 20, 0.9);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      input {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+        background: #222;
+        color: #00e7ff;
+      }
+
+      button {
+        width: 100%;
+        padding: 10px;
+        background: linear-gradient(45deg, #ff00a1, #00e7ff);
+        color: white;
+        border: none;
+        border-radius: 30px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        transition: transform 0.2s, box-shadow 0.3s;
+      }
+
+      button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+      }
+
+      .error {
+        color: red;
+        font-size: 14px;
+        margin-top: 10px;
+      }
+
+      .success {
+        color: green;
+        font-size: 14px;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <div class="paginaweb">HOTELUDP</div>
+      <div class="menu">
+        <a href="/">Inicio</a>
+        <a href="/consultas.html">Consultas</a>
+        <a href="/modificaciones.html">Modificaiones</a>
+      </div>
+    </div>
+
+    <div class="container">
+      <h2>Editar Datos de Huesped</h2>
+      <form id="formEditarHuesped">
+        <div class="form-group">
+          <label for="idHuesped">ID del Huesped:</label>
+          <input type="number" id="idHuesped" name="idHuesped" required />
+        </div>
+        <div class="form-group">
+          <label for="nombre">Nombre:</label>
+          <input type="text" id="nombre" name="nombre" required />
+        </div>
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+        <div class="form-group">
+          <label for="direccion">Dirección:</label>
+          <input type="text" id="direccion" name="direccion" required />
+        </div>
+        <div class="form-group">
+          <label for="telefono">Teléfono:</label>
+          <input type="text" id="telefono" name="telefono" required />
+        </div>
+        <button type="submit">Actualizar Datos</button>
+      </form>
+      <div id="resultado" class="error"></div>
+    </div>
+
+    <script>
+      document
+        .getElementById('formEditarHuesped')
+        .addEventListener('submit', async function (event) {
+          event.preventDefault();
+
+          const idHuesped = document.getElementById('idHuesped').value;
+          const nombre = document.getElementById('nombre').value;
+          const email = document.getElementById('email').value;
+          const direccion = document.getElementById('direccion').value;
+          const telefono = document.getElementById('telefono').value;
+
+          if (!idHuesped || isNaN(idHuesped)) {
+            document.getElementById('resultado').textContent =
+              'Por favor ingresa un ID de huésped válido.';
+            document.getElementById('resultado').className = 'error';
+            return;
+          }
+
+          try {
+            const response = await fetch(
+              `http://localhost:3001/editarHuesped/${idHuesped}`,
+              {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ nombre, email, direccion, telefono }),
+              }
+            );
+
+            const data = await response.json();
+
+            if (response.ok) {
+              document.getElementById('resultado').textContent = data.message;
+              document.getElementById('resultado').className = 'success';
+            } else {
+              document.getElementById('resultado').textContent = data.error;
+              document.getElementById('resultado').className = 'error';
+            }
+          } catch (error) {
+            document.getElementById('resultado').textContent =
+              'Error al comunicar con el servidor.';
+            document.getElementById('resultado').className = 'error';
+          }
+        });
+    </script>
+  </body>
+</html>

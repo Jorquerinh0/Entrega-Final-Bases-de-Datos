@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Formulario de Reserva</title>
+    <style>
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(90deg, #111, #444);
+        padding: 1rem 2rem;
+        color: white;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      }
+
+      .navbar a {
+        color: #00e7ff;
+        text-decoration: none;
+        margin: 0 1rem;
+        font-size: 1.1rem;
+        transition: color 0.3s, transform 0.2s;
+      }
+
+      .navbar a:hover {
+        color: #ff00a1;
+        transform: scale(1.1);
+      }
+
+      .navbar .paginaweb {
+        font-weight: bold;
+        font-size: 1.5rem;
+        color: #00e7ff;
+      }
+
+      body {
+        font-family: 'Arial', sans-serif;
+        background: linear-gradient(to bottom, #0d0d0d, #1a1a1a);
+        margin: 0;
+        color: #eee;
+        padding: 20px;
+      }
+
+      h1 {
+        text-align: center;
+        color: #00e7ff;
+        margin-top: 2rem;
+        font-size: 2rem;
+        text-shadow: 0 0 5px #00e7ff, 0 0 10px #00e7ff;
+      }
+
+      button {
+        display: block;
+        margin: 2rem auto;
+        padding: 0.8rem 2rem;
+        font-size: 1.1rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: white;
+        background: linear-gradient(45deg, #ff00a1, #00e7ff);
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.6);
+        transition: all 0.3s;
+      }
+
+      button:hover {
+        transform: translateY(-2px) scale(1.1);
+        box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.8);
+      }
+
+      .form-container {
+        background: #111;
+        padding: 1rem;
+        border-radius: 10px;
+        max-width: 800px;
+        margin: 2rem auto;
+        box-shadow: inset 0px 4px 15px rgba(0, 0, 0, 0.7);
+      }
+
+      label {
+        color: #00e7ff;
+        font-size: 1.1rem;
+        display: block;
+        margin-bottom: 0.5rem;
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 0.8rem;
+        margin: 0.5rem 0 1.5rem;
+        border: none;
+        border-radius: 5px;
+      }
+
+      .resultado {
+        background: #111;
+        padding: 1rem;
+        border-radius: 10px;
+        font-size: 1rem;
+        color: #00e7ff;
+        margin: 2rem auto;
+        max-width: 800px;
+        box-shadow: inset 0px 4px 15px rgba(0, 0, 0, 0.7);
+        text-align: center;
+        font-family: 'Courier New', Courier, monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <div class="paginaweb">HOTELUDP</div>
+      <div class="menu">
+        <a href="/">Inicio</a>
+        <a href="/consultas.html">Consultas</a>
+        <a href="/modificaciones.html">Modificaiones</a>
+      </div>
+    </div>
+
+    <h1>Formulario de Reserva</h1>
+
+    <div class="form-container">
+      <form id="reservaForm">
+        <div>
+          <label for="nombre">Nombre:</label>
+          <input type="text" id="nombre" name="nombre" required />
+        </div>
+        <div>
+          <label for="email">Correo Electrónico:</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+        <div>
+          <label for="telefono">Teléfono:</label>
+          <input type="text" id="telefono" name="telefono" required />
+        </div>
+        <div>
+          <label for="direccion">Dirección:</label>
+          <input type="text" id="direccion" name="direccion" required />
+        </div>
+        <div>
+          <label for="fechaIngreso">Fecha de Ingreso:</label>
+          <input type="date" id="fechaIngreso" name="fechaIngreso" required />
+        </div>
+        <div>
+          <label for="fechaSalida">Fecha de Salida:</label>
+          <input type="date" id="fechaSalida" name="fechaSalida" required />
+        </div>
+        <div>
+          <button type="submit">Realizar Reserva</button>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      document
+        .getElementById('reservaForm')
+        .addEventListener('submit', async function (event) {
+          event.preventDefault();
+
+          const nombre = document.getElementById('nombre').value;
+          const email = document.getElementById('email').value;
+          const telefono = document.getElementById('telefono').value;
+          const direccion = document.getElementById('direccion').value;
+          const fechaIngreso = document.getElementById('fechaIngreso').value;
+          const fechaSalida = document.getElementById('fechaSalida').value;
+
+          if (
+            !nombre ||
+            !email ||
+            !telefono ||
+            !direccion ||
+            !fechaIngreso ||
+            !fechaSalida
+          ) {
+            alert('Por favor, complete todos los campos.');
+            return;
+          }
+
+          try {
+            const response = await fetch(
+              'http://localhost:3001/reservarInteractivo',
+              {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  nombre,
+                  email,
+                  telefono,
+                  direccion,
+                  fechaIngreso,
+                  fechaSalida,
+                }),
+              }
+            );
+
+            const data = await response.json();
+
+            if (response.ok) {
+              alert(
+                `Reserva realizada con éxito. ID de Reserva: ${data.id_reserva}`
+              );
+            } else {
+              alert('Error al realizar la reserva: ' + data.message);
+            }
+          } catch (error) {
+            console.error('Error al enviar la solicitud:', error);
+            alert('Hubo un error al procesar la reserva.');
+          }
+        });
+    </script>
+  </body>
+</html>
