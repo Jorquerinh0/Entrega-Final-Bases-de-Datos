@@ -20,7 +20,7 @@ const posts = await sql('SELECT * FROM posts');
 
 
 
-Link Github:
+Link Github: https://github.com/Jorquerinh0/Entrega-Final-Bases-de-Datos.git
 
 ## Instalación de Dependencias
 
